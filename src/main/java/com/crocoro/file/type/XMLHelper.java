@@ -8,7 +8,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -241,6 +241,16 @@ public class XMLHelper {
         return result;
     }
 
+    public Element getElementByAttr(String path, String attrName, String attrValue) {
+        List<Element> eles = getElements(path);
+        for (Element ele : eles) {
+            if (ele.attributeValue(attrName, null).equals(attrValue)) {
+                return ele;
+            }
+        }
+        return null;
+    }
+
     public void setElementTextByAttr(Document doc, String ele, String name, String attr, String val, String target) {
         List<Element> list = doc.getRootElement().element(ele).elements(name);
         for (Element el : list) {
@@ -284,6 +294,10 @@ public class XMLHelper {
         writeXML(xmlFile);
     }
 
+
+    public void writeXML() throws IOException, DocumentException {
+        writeXML(xmlFile);
+    }
 
     /**
      * 写入XML文件
@@ -329,7 +343,8 @@ public class XMLHelper {
      */
     public void writeXML(Document doc, File xmlFile) throws IOException, DocumentException {
         OutputFormat format = OutputFormat.createPrettyPrint();
-        XMLWriter writer = new XMLWriter(new FileWriter(xmlFile), format);
+        format.setEncoding("UTF-8");
+        XMLWriter writer = new XMLWriter(new FileOutputStream(xmlFile), format);
         writer.write(doc);
         writer.close();
         this.doc = readXML(xmlFile);
